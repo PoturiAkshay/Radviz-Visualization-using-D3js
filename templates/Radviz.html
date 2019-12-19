@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment 4</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <center><h1>Data visualization using Radviz</h1></center>
+</head>
+<body style="margin-left: 30px">
+<b><h2>Please select the dataset</h2></b>
+<form action="/file" method="post" onsubmit="return validate_check()">
+    <select name='file' id="csvfile" onchange="class_selection()">
+        <option value="select">Select</option>
+        <option value="iris.csv" {% if file_selected=="iris.csv" %} selected {% endif %}>iris.csv</option>
+        <option value="winequality-red.csv" {% if file_selected=="winequality-red.csv" %} selected {% endif %} >
+            winequality-red.csv
+        </option>
+        <option value="winequality-white.csv" {% if file_selected=="winequality-white.csv" %} selected {% endif %} >
+            winequality-white.csv
+        </option>
+        <option value="Assignment1_processed.csv" {% if file_selected=="Assignment1_processed.csv" %}
+                selected {% endif %} >Assignment1_processed.csv
+        </option>
+    </select>
+
+    <br>
+
+    <input type="checkbox" style="margin-top: 20px" name="cluster_option" id="cluster_option"
+           onclick="clustersOption()" {% if is_checked=="on" %} checked {% endif %}>clustering
+    <br>
+
+    <p id="numofclusters">
+        number of clusters(default 4 clusters): <input type="text" id="clusters_input" name="clusters" value="4">
+    </p>
+
+    <p name="class_selector_elem" id="class_selector_elem" style="display: none">
+        please select the class indicator
+        <select name="class_selector" id="class_selector">
+            <option value="salary" {% if class_selected=="salary" %} selected {% endif %}>salary</option>
+            <option value="sex" {% if class_selected=="sex" %} selected {% endif %}>sex</option>
+            <option value="race" {% if class_selected=="race" %} selected {% endif %}>race</option>
+            <option value="relationship" {% if class_selected=="relationship" %} selected {% endif %}>relationship
+            </option>
+            <option value="occupation" {% if class_selected=="occupation" %} selected {% endif %}>occupation</option>
+            <option value="education" {% if class_selected=="education" %} selected {% endif %}>education</option>
+            <option value="workclass" {% if class_selected=="workclass" %} selected {% endif %}>workclass</option>
+            <option value="marital-status" {% if class_selected=="marital-status" %} selected {% endif %}>
+                marital-status
+            </option>
+            <option value="native-country" {% if class_selected=="native-country" %} selected {% endif %}>
+                native-country
+            </option>
+            </option>
+        </select>
+    </p>
+
+    <br>
+    <button id="submit" type="submit">Submit</button>
+</form>
+
+<div id="sliderContainer">
+    <p id="init_slider">please use the below slider for color opacity level<br></p></div>
+
+<div id="Graph" style="display: inline-block"></div>
+<div id="colormatrix" style="display: inline-block"></div>
+</body>
+<script src="../static/file.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var data = '{{ obj | safe}}';
+        var columns = '{{ col | safe}}';
+        var file = '{{ file_selected }}';
+        var correlation_matrix_dict = '{{ correlation_matrix_dict | safe}}';
+        class_selection();
+        createRadviz(data, columns, file, correlation_matrix_dict);
+    })
+</script>
+</html>
